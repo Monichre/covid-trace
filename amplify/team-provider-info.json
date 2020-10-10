@@ -14,12 +14,6 @@
         "categories": {
             "auth": {
                 "covidtrace64a38183": {}
-            },
-            "hosting": {
-                "amplifyhosting": {
-                    "appId": "d3g4q0d0o1blag",
-                    "type": "manual"
-                }
             }
         }
     }

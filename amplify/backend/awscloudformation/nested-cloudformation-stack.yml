@@ -230,17 +230,6 @@
 				}
 			}
 		},
-		"hostingamplifyhosting": {
-			"Type": "AWS::CloudFormation::Stack",
-			"Properties": {
-				"TemplateURL": "https://s3.amazonaws.com/amplify-covid-trace-dev-210711-deployment/amplify-cfn-templates/hosting/amplifyhosting-template.json",
-				"Parameters": {
-					"appId": "d3g4q0d0o1blag",
-					"type": "manual",
-					"env": "dev"
-				}
-			}
-		},
 		"UpdateRolesWithIDPFunction": {
 			"DependsOn": [
 				"AuthRole",
