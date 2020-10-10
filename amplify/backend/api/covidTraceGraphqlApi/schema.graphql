@@ -1,0 +1,69 @@
+type SuperAdmin @model 
+  @key(name: "superAdminByEmail", fields: ["email"], queryField: "superAdminByEmail")
+  @auth(rules: [{ allow: owner }]) {
+  id: ID!
+  name: String
+  username: String
+  email: String!
+}
+
+type VenueAdmin
+  @model
+  @key(name: "venueAdminByEmail", fields: ["email"], queryField: "venueAdminByEmail")
+  @auth(rules: [{ allow: owner }, { allow: groups, groups: ["SuperAdmin"] }]) {
+  id: ID!
+  name: String
+  username: String
+  phone_number: String
+  email: String!
+}
+
+type Venue
+  @model
+  @key(name: "venueByType", fields: ["type"], queryField: "venueByType")
+  @auth(
+    rules: [
+      { allow: owner },
+      { allow: groups, groups: ["SuperAdmin", "VenueAdmin"] }
+    ]
+  ) {
+  id: ID!
+  name: String!
+  address: String!
+  website: String
+  type: String!
+  owner: VenueAdmin @connection
+  guests: [Guest] @connection
+  visits: [Registration] @connection
+}
+
+type Guest
+  @model
+  @key(name: "guestByEmail", fields: ["email"], queryField: "guestByEmail")
+  @auth(
+    rules: [
+      { allow: owner },
+      { allow: groups, groups: ["VenueAdmin", "SuperAdmin"] }
+    ]
+  ) {
+  id: ID!
+  name: String!
+  phone: String!
+  email: String!
+}
+
+type Registration
+  @model
+  @auth(
+    rules: [
+      { allow: owner },
+      { allow: groups, groups: ["VenueAdmin", "SuperAdmin", "Guest"] }
+    ]
+  ) {
+  id: ID!
+  time: String!
+  date: String!
+  partySize: Int!
+  venue: Venue @connection
+  guest: Guest @connection
+}

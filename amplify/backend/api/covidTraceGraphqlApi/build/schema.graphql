@@ -1,0 +1,417 @@
+type SuperAdmin {
+  id: ID!
+  name: String
+  username: String
+  email: String!
+  owner: String
+}
+
+type VenueAdmin {
+  id: ID!
+  name: String
+  username: String
+  phone_number: String
+  email: String!
+  owner: String
+}
+
+type Venue {
+  id: ID!
+  name: String!
+  address: String!
+  website: String
+  type: String!
+  owner: VenueAdmin
+  guests(filter: ModelGuestFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelGuestConnection
+  visits(filter: ModelRegistrationFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelRegistrationConnection
+}
+
+type Guest {
+  id: ID!
+  name: String!
+  phone: String!
+  email: String!
+  owner: String
+}
+
+type Registration {
+  id: ID!
+  time: String!
+  date: String!
+  partySize: Int!
+  venue: Venue
+  guest: Guest
+  owner: String
+}
+
+enum ModelSortDirection {
+  ASC
+  DESC
+}
+
+type ModelSuperAdminConnection {
+  items: [SuperAdmin]
+  nextToken: String
+}
+
+input ModelStringInput {
+  ne: String
+  eq: String
+  le: String
+  lt: String
+  ge: String
+  gt: String
+  contains: String
+  notContains: String
+  between: [String]
+  beginsWith: String
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+  size: ModelSizeInput
+}
+
+input ModelIDInput {
+  ne: ID
+  eq: ID
+  le: ID
+  lt: ID
+  ge: ID
+  gt: ID
+  contains: ID
+  notContains: ID
+  between: [ID]
+  beginsWith: ID
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+  size: ModelSizeInput
+}
+
+input ModelIntInput {
+  ne: Int
+  eq: Int
+  le: Int
+  lt: Int
+  ge: Int
+  gt: Int
+  between: [Int]
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelFloatInput {
+  ne: Float
+  eq: Float
+  le: Float
+  lt: Float
+  ge: Float
+  gt: Float
+  between: [Float]
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelBooleanInput {
+  ne: Boolean
+  eq: Boolean
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelSizeInput {
+  ne: Int
+  eq: Int
+  le: Int
+  lt: Int
+  ge: Int
+  gt: Int
+  between: [Int]
+}
+
+input ModelSuperAdminFilterInput {
+  id: ModelIDInput
+  name: ModelStringInput
+  username: ModelStringInput
+  email: ModelStringInput
+  and: [ModelSuperAdminFilterInput]
+  or: [ModelSuperAdminFilterInput]
+  not: ModelSuperAdminFilterInput
+}
+
+type Query {
+  getSuperAdmin(id: ID!): SuperAdmin
+  listSuperAdmins(filter: ModelSuperAdminFilterInput, limit: Int, nextToken: String): ModelSuperAdminConnection
+  getVenueAdmin(id: ID!): VenueAdmin
+  listVenueAdmins(filter: ModelVenueAdminFilterInput, limit: Int, nextToken: String): ModelVenueAdminConnection
+  getVenue(id: ID!): Venue
+  listVenues(filter: ModelVenueFilterInput, limit: Int, nextToken: String): ModelVenueConnection
+  getGuest(id: ID!): Guest
+  listGuests(filter: ModelGuestFilterInput, limit: Int, nextToken: String): ModelGuestConnection
+  getRegistration(id: ID!): Registration
+  listRegistrations(filter: ModelRegistrationFilterInput, limit: Int, nextToken: String): ModelRegistrationConnection
+  superAdminByEmail(email: String, sortDirection: ModelSortDirection, filter: ModelSuperAdminFilterInput, limit: Int, nextToken: String): ModelSuperAdminConnection
+  venueAdminByEmail(email: String, sortDirection: ModelSortDirection, filter: ModelVenueAdminFilterInput, limit: Int, nextToken: String): ModelVenueAdminConnection
+  venueByType(type: String, sortDirection: ModelSortDirection, filter: ModelVenueFilterInput, limit: Int, nextToken: String): ModelVenueConnection
+  guestByEmail(email: String, sortDirection: ModelSortDirection, filter: ModelGuestFilterInput, limit: Int, nextToken: String): ModelGuestConnection
+}
+
+input CreateSuperAdminInput {
+  id: ID
+  name: String
+  username: String
+  email: String!
+}
+
+input UpdateSuperAdminInput {
+  id: ID!
+  name: String
+  username: String
+  email: String
+}
+
+input DeleteSuperAdminInput {
+  id: ID
+}
+
+type Mutation {
+  createSuperAdmin(input: CreateSuperAdminInput!, condition: ModelSuperAdminConditionInput): SuperAdmin
+  updateSuperAdmin(input: UpdateSuperAdminInput!, condition: ModelSuperAdminConditionInput): SuperAdmin
+  deleteSuperAdmin(input: DeleteSuperAdminInput!, condition: ModelSuperAdminConditionInput): SuperAdmin
+  createVenueAdmin(input: CreateVenueAdminInput!, condition: ModelVenueAdminConditionInput): VenueAdmin
+  updateVenueAdmin(input: UpdateVenueAdminInput!, condition: ModelVenueAdminConditionInput): VenueAdmin
+  deleteVenueAdmin(input: DeleteVenueAdminInput!, condition: ModelVenueAdminConditionInput): VenueAdmin
+  createVenue(input: CreateVenueInput!, condition: ModelVenueConditionInput): Venue
+  updateVenue(input: UpdateVenueInput!, condition: ModelVenueConditionInput): Venue
+  deleteVenue(input: DeleteVenueInput!, condition: ModelVenueConditionInput): Venue
+  createGuest(input: CreateGuestInput!, condition: ModelGuestConditionInput): Guest
+  updateGuest(input: UpdateGuestInput!, condition: ModelGuestConditionInput): Guest
+  deleteGuest(input: DeleteGuestInput!, condition: ModelGuestConditionInput): Guest
+  createRegistration(input: CreateRegistrationInput!, condition: ModelRegistrationConditionInput): Registration
+  updateRegistration(input: UpdateRegistrationInput!, condition: ModelRegistrationConditionInput): Registration
+  deleteRegistration(input: DeleteRegistrationInput!, condition: ModelRegistrationConditionInput): Registration
+}
+
+input ModelSuperAdminConditionInput {
+  name: ModelStringInput
+  username: ModelStringInput
+  email: ModelStringInput
+  and: [ModelSuperAdminConditionInput]
+  or: [ModelSuperAdminConditionInput]
+  not: ModelSuperAdminConditionInput
+}
+
+enum ModelAttributeTypes {
+  binary
+  binarySet
+  bool
+  list
+  map
+  number
+  numberSet
+  string
+  stringSet
+  _null
+}
+
+type Subscription {
+  onCreateSuperAdmin(owner: String!): SuperAdmin @aws_subscribe(mutations: ["createSuperAdmin"])
+  onUpdateSuperAdmin(owner: String!): SuperAdmin @aws_subscribe(mutations: ["updateSuperAdmin"])
+  onDeleteSuperAdmin(owner: String!): SuperAdmin @aws_subscribe(mutations: ["deleteSuperAdmin"])
+  onCreateVenueAdmin(owner: String): VenueAdmin @aws_subscribe(mutations: ["createVenueAdmin"])
+  onUpdateVenueAdmin(owner: String): VenueAdmin @aws_subscribe(mutations: ["updateVenueAdmin"])
+  onDeleteVenueAdmin(owner: String): VenueAdmin @aws_subscribe(mutations: ["deleteVenueAdmin"])
+  onCreateVenue(owner: String): Venue @aws_subscribe(mutations: ["createVenue"])
+  onUpdateVenue(owner: String): Venue @aws_subscribe(mutations: ["updateVenue"])
+  onDeleteVenue(owner: String): Venue @aws_subscribe(mutations: ["deleteVenue"])
+  onCreateGuest(owner: String): Guest @aws_subscribe(mutations: ["createGuest"])
+  onUpdateGuest(owner: String): Guest @aws_subscribe(mutations: ["updateGuest"])
+  onDeleteGuest(owner: String): Guest @aws_subscribe(mutations: ["deleteGuest"])
+  onCreateRegistration(owner: String): Registration @aws_subscribe(mutations: ["createRegistration"])
+  onUpdateRegistration(owner: String): Registration @aws_subscribe(mutations: ["updateRegistration"])
+  onDeleteRegistration(owner: String): Registration @aws_subscribe(mutations: ["deleteRegistration"])
+}
+
+type ModelVenueAdminConnection {
+  items: [VenueAdmin]
+  nextToken: String
+}
+
+input ModelVenueAdminFilterInput {
+  id: ModelIDInput
+  name: ModelStringInput
+  username: ModelStringInput
+  phone_number: ModelStringInput
+  email: ModelStringInput
+  and: [ModelVenueAdminFilterInput]
+  or: [ModelVenueAdminFilterInput]
+  not: ModelVenueAdminFilterInput
+}
+
+input CreateVenueAdminInput {
+  id: ID
+  name: String
+  username: String
+  phone_number: String
+  email: String!
+}
+
+input UpdateVenueAdminInput {
+  id: ID!
+  name: String
+  username: String
+  phone_number: String
+  email: String
+}
+
+input DeleteVenueAdminInput {
+  id: ID
+}
+
+input ModelVenueAdminConditionInput {
+  name: ModelStringInput
+  username: ModelStringInput
+  phone_number: ModelStringInput
+  email: ModelStringInput
+  and: [ModelVenueAdminConditionInput]
+  or: [ModelVenueAdminConditionInput]
+  not: ModelVenueAdminConditionInput
+}
+
+type ModelVenueConnection {
+  items: [Venue]
+  nextToken: String
+}
+
+input ModelVenueFilterInput {
+  id: ModelIDInput
+  name: ModelStringInput
+  address: ModelStringInput
+  website: ModelStringInput
+  type: ModelStringInput
+  and: [ModelVenueFilterInput]
+  or: [ModelVenueFilterInput]
+  not: ModelVenueFilterInput
+}
+
+input CreateVenueInput {
+  id: ID
+  name: String!
+  address: String!
+  website: String
+  type: String!
+  venueOwnerId: ID
+}
+
+input UpdateVenueInput {
+  id: ID!
+  name: String
+  address: String
+  website: String
+  type: String
+  venueOwnerId: ID
+}
+
+input DeleteVenueInput {
+  id: ID
+}
+
+input ModelVenueConditionInput {
+  name: ModelStringInput
+  address: ModelStringInput
+  website: ModelStringInput
+  type: ModelStringInput
+  and: [ModelVenueConditionInput]
+  or: [ModelVenueConditionInput]
+  not: ModelVenueConditionInput
+}
+
+type ModelGuestConnection {
+  items: [Guest]
+  nextToken: String
+}
+
+input ModelGuestFilterInput {
+  id: ModelIDInput
+  name: ModelStringInput
+  phone: ModelStringInput
+  email: ModelStringInput
+  and: [ModelGuestFilterInput]
+  or: [ModelGuestFilterInput]
+  not: ModelGuestFilterInput
+}
+
+input CreateGuestInput {
+  id: ID
+  name: String!
+  phone: String!
+  email: String!
+  venueGuestsId: ID
+}
+
+input UpdateGuestInput {
+  id: ID!
+  name: String
+  phone: String
+  email: String
+  venueGuestsId: ID
+}
+
+input DeleteGuestInput {
+  id: ID
+}
+
+input ModelGuestConditionInput {
+  name: ModelStringInput
+  phone: ModelStringInput
+  email: ModelStringInput
+  and: [ModelGuestConditionInput]
+  or: [ModelGuestConditionInput]
+  not: ModelGuestConditionInput
+}
+
+type ModelRegistrationConnection {
+  items: [Registration]
+  nextToken: String
+}
+
+input ModelRegistrationFilterInput {
+  id: ModelIDInput
+  time: ModelStringInput
+  date: ModelStringInput
+  partySize: ModelIntInput
+  and: [ModelRegistrationFilterInput]
+  or: [ModelRegistrationFilterInput]
+  not: ModelRegistrationFilterInput
+}
+
+input CreateRegistrationInput {
+  id: ID
+  time: String!
+  date: String!
+  partySize: Int!
+  venueVisitsId: ID
+  registrationVenueId: ID
+  registrationGuestId: ID
+}
+
+input UpdateRegistrationInput {
+  id: ID!
+  time: String
+  date: String
+  partySize: Int
+  venueVisitsId: ID
+  registrationVenueId: ID
+  registrationGuestId: ID
+}
+
+input DeleteRegistrationInput {
+  id: ID
+}
+
+input ModelRegistrationConditionInput {
+  time: ModelStringInput
+  date: ModelStringInput
+  partySize: ModelIntInput
+  and: [ModelRegistrationConditionInput]
+  or: [ModelRegistrationConditionInput]
+  not: ModelRegistrationConditionInput
+}

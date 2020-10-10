@@ -1,0 +1,14 @@
+{
+    "CreateAPIKey": 0,
+    "AppSyncApiName": "covidTraceGraphqlApi",
+    "DynamoDBBillingMode": "PAY_PER_REQUEST",
+    "DynamoDBEnableServerSideEncryption": "false",
+    "AuthCognitoUserPoolId": {
+        "Fn::GetAtt": [
+            "authcovidtrace64a38183",
+            "Outputs.UserPoolId"
+        ]
+    },
+    "S3DeploymentBucket": "amplify-covid-trace-dev-210711-deployment",
+    "S3DeploymentRootKey": "amplify-appsync-files/8623940855a0501c8ab059d7fe59e04583f20304"
+}
