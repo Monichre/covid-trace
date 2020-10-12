@@ -2,7 +2,7 @@
 
 import React from 'react'
 
-import { useForm, Controller } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import {
   Divider,
   Input,
@@ -10,13 +10,11 @@ import {
   Button,
   Select,
   Row,
-  User,
+  Spacer,
   Dot,
   Text,
-  Description,
-  Card,
+  ButtonGroup,
   Col,
-  Page,
   Modal,
 } from '@geist-ui/react'
 import { useEffect, useState } from 'react'
@@ -33,13 +31,20 @@ export const CreateVenue: React.SFC<CreateVenueFormProps> = ({
   visible,
   onClose,
 }) => {
-  const { register, handleSubmit, errors, setValue } = useForm<FormData>()
-  const [venue, setVenue] = useState(null)
-  const [venueOwner, setVenueOwner] = useState(null)
+  const { register, handleSubmit, errors, setValue, watch } = useForm<
+    FormData
+  >()
+  const [qrCodeUrl, setQrCodeUrl] = useState(null)
   const [submitted, setSubmitted] = useState(false)
+
+  const watchVenueName = watch('venueName') // you can supply default value as second argument
 
   const handleVenueType = (type) => {
     setValue('venueType', type)
+  }
+  const saveQrCode = (qrCodeS3BucketLink) => {
+    setQrCodeUrl(qrCodeS3BucketLink)
+    closeHandler()
   }
   const onSubmit = async (values) => {
     const {
@@ -48,7 +53,7 @@ export const CreateVenue: React.SFC<CreateVenueFormProps> = ({
       name: firstName,
       lastName,
       venueType,
-      venue,
+      venueName,
       website,
     } = values
     const name = `${firstName} ${lastName}`
@@ -62,24 +67,24 @@ export const CreateVenue: React.SFC<CreateVenueFormProps> = ({
     })
 
     if (owner) {
-      setVenueOwner(owner)
       const { id } = owner
       // @ts-ignore
       const { data } = await API.graphql({
         query: createVenue,
         variables: {
           input: {
-            name: venue,
+            name: venueName,
             address,
             venueOwnerId: id,
+            qrCode: qrCodeUrl,
             website,
             type: venueType,
           },
         },
       })
+      console.log('data: ', data)
       if (data && data.createVenue) {
-        setVenue(data.createVenue)
-        setSubmitted(true)
+        onClose()
       }
     }
   }
@@ -97,123 +102,106 @@ export const CreateVenue: React.SFC<CreateVenueFormProps> = ({
 
   return (
     <Modal open={visible} onClose={onClose} width='100vw'>
-      <QrCodeModal closeHandler={closeHandler} open={qrOpen} />
-      <Page size='medium'>
-        <Page.Header>
-          <h2>Header</h2>
-        </Page.Header>
-        <Page.Content>
-          {submitted && (
-            <Card shadow>
-              <User
-                src='https://unix.bio/assets/avatar.png'
-                name={venueOwner.name}
-              >
-                {venueOwner.email}
-              </User>
-              <Description
-                title={venue.name}
-                content={() => (
-                  <div>
-                    <Text>{venue.address}</Text>
-                    <Text>{venue.website}</Text>
-                  </div>
-                )}
-              />
-            </Card>
-          )}
-          {!submitted && (
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <Fieldset>
-                <Fieldset.Title>Create A New Venue</Fieldset.Title>
-                <Fieldset.Subtitle>
-                  Enter the following information
-                </Fieldset.Subtitle>
-                <Row>
-                  <Col>
-                    <Input ref={register({ required: true })} name='venue'>
-                      Name
-                    </Input>
-                  </Col>
-                  <Col>
-                    <Input ref={register({ required: true })} name='address'>
-                      Address
-                    </Input>
-                  </Col>
-                  <Col>
-                    <Input ref={register({ required: true })} name='website'>
-                      Website
-                    </Input>
-                  </Col>
-                  <Col>
-                    <Dot type='warning'>
-                      <Text small>Venue: Type</Text>
-                    </Dot>
-                    <br />
+      <QrCodeModal
+        closeHandler={closeHandler}
+        open={qrOpen}
+        saveQrCode={saveQrCode}
+        venueName={watchVenueName}
+      />
 
-                    <Select
-                      placeholder='Choose one'
-                      name='venueType'
-                      onChange={handleVenueType}
-                    >
-                      <Select.Option value='Restaurant'>
-                        Restaurant
-                      </Select.Option>
-                      <Select.Option value='Construction Site'>
-                        Construction Site
-                      </Select.Option>
-                      <Select.Option value='Office'>Office</Select.Option>
-                      <Select.Option value='Gallery'>Gallery</Select.Option>
-                    </Select>
-                  </Col>
-                </Row>
+      <Modal.Content>
+        {!submitted && (
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Fieldset>
+              <Fieldset.Title>Create A New Venue</Fieldset.Title>
+              <Fieldset.Subtitle>
+                Enter the following information
+              </Fieldset.Subtitle>
+              <Row>
+                <Col span={6}>
+                  <Input ref={register({ required: true })} name='venueName'>
+                    Venue Name
+                  </Input>
+                </Col>
+                <Col span={6}>
+                  <Input ref={register({ required: true })} name='address'>
+                    Address
+                  </Input>
+                </Col>
+                <Col span={6}>
+                  <Input ref={register({ required: true })} name='website'>
+                    Website
+                  </Input>
+                </Col>
+                <Col span={6}>
+                  <Dot type='warning'>
+                    <Text small>Venue: Type</Text>
+                  </Dot>
+                  <Spacer y={0.5} />
 
-                <Divider />
-                <Fieldset.Title>Owner</Fieldset.Title>
-                <Row>
-                  <Col>
-                    <Input ref={register({ required: true })} name='name'>
-                      First Name
-                    </Input>
-                  </Col>
-                  <Col>
-                    <Input ref={register({ required: true })} name='lastName'>
-                      Last Name
-                    </Input>
-                  </Col>
-                  <Col>
-                    <Input ref={register({ required: true })} name='email'>
-                      Email
-                    </Input>
-                  </Col>
-                </Row>
+                  <Select
+                    placeholder='Choose one'
+                    name='venueType'
+                    onChange={handleVenueType}
+                  >
+                    <Select.Option value='Restaurant'>Restaurant</Select.Option>
+                    <Select.Option value='Construction Site'>
+                      Construction Site
+                    </Select.Option>
+                    <Select.Option value='Office'>Office</Select.Option>
+                    <Select.Option value='Gallery'>Gallery</Select.Option>
+                  </Select>
+                </Col>
+              </Row>
 
-                <Fieldset.Footer>
-                  <Fieldset.Footer.Status>
-                    {errors
-                      ? `${Object.keys(errors)
-                          .map((key) => `${key} ${errors[key].type}`)
-                          .join(', ')}`
-                      : 'Waiting'}
-                  </Fieldset.Footer.Status>
-                  <Fieldset.Footer.Actions>
+              <Divider />
+              <Fieldset.Title>Owner</Fieldset.Title>
+              <Row>
+                <Col span={8}>
+                  <Input ref={register({ required: true })} name='name'>
+                    First Name
+                  </Input>
+                </Col>
+                <Col span={8}>
+                  <Input ref={register({ required: true })} name='lastName'>
+                    Last Name
+                  </Input>
+                </Col>
+                <Col span={8}>
+                  <Input ref={register({ required: true })} name='email'>
+                    Email
+                  </Input>
+                </Col>
+              </Row>
+
+              <Fieldset.Footer>
+                <Fieldset.Footer.Status>
+                  {errors
+                    ? `${Object.keys(errors)
+                        .map((key) => `${key} ${errors[key].type}`)
+                        .join(', ')}`
+                    : 'Waiting'}
+                </Fieldset.Footer.Status>
+
+                <Fieldset.Footer.Actions>
+                  <ButtonGroup>
                     <Button auto onClick={handler}>
                       Create QR Code
                     </Button>
-                  </Fieldset.Footer.Actions>
+                    <button disabled={!qrCodeUrl} type='submit'>
+                      Save
+                    </button>
+                  </ButtonGroup>
+                </Fieldset.Footer.Actions>
+              </Fieldset.Footer>
+            </Fieldset>
+          </form>
+        )}
+      </Modal.Content>
 
-                  <Fieldset.Footer.Actions>
-                    <button type='submit'>Save</button>
-                  </Fieldset.Footer.Actions>
-                </Fieldset.Footer>
-              </Fieldset>
-            </form>
-          )}
-        </Page.Content>
-        <Page.Footer>
-          <h2>Footer</h2>
-        </Page.Footer>
-      </Page>
+      <Modal.Action passive onClick={onClose}>
+        Cancel
+      </Modal.Action>
     </Modal>
   )
 }

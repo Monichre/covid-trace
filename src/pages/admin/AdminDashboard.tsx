@@ -1,43 +1,44 @@
 import { Auth, API } from 'aws-amplify'
 import React, { useState, useEffect } from 'react'
-import { listVenues } from '../../graphql/queries'
+import { listVenueAdmins, listVenues } from '../../graphql/queries'
 import {
   Button,
   Modal,
   Col,
   Table,
   Row,
-  Page,
+  Divider,
   ButtonGroup,
+  Text,
 } from '@geist-ui/react'
 import { CreateVenue } from '../../components/CreateVenue'
 import QR from 'qrcode.react'
+import { useLocation } from 'react-router-dom'
+import { deleteVenue } from '../../graphql/mutations'
 
 export interface AdminDashboardProps {}
 
-const AdminDashboard: React.SFC<AdminDashboardProps> = () => {
+export const AdminDashboard: React.SFC<AdminDashboardProps> = () => {
   const [visible, setVisible] = useState(false)
   const toggle = () => setVisible((visible) => !visible)
 
-  const [tableData, setTableData] = useState(null)
+  const [venueTableData, setVenueTableData] = useState(null)
+  const [venueAdminTableData, setVenueAdminTableData] = useState(null)
+
   const [qrOpen, setQrOpen] = useState(false)
-  const [authenticatedAdmin, setAuthenticatedAdmin] = useState()
-
   const [currentVenue, setCurrentVenue] = useState(null)
-  const handler = () => setQrOpen(true)
-
-  const session = Auth.currentSession().then((res) => {
-    console.log('res: ', res)
-  })
 
   const closeHandler = () => {
     setQrOpen(false)
   }
 
   const getVenues = async () => {
-    const operation = (actions, rowData) => {
+    const showQrCode = (actions, { rowValue }) => {
+      console.log('rowValue: ', rowValue)
+
       const updateCurrentVenue = () => {
-        setCurrentVenue(rowData)
+        setCurrentVenue(rowValue)
+        setQrOpen(true)
       }
       return (
         <Button auto size='mini' onClick={updateCurrentVenue}>
@@ -45,95 +46,131 @@ const AdminDashboard: React.SFC<AdminDashboardProps> = () => {
         </Button>
       )
     }
+    const showDelete = (actions, { rowValue }) => {
+      const { id } = rowValue
+
+      const deleteTheVenue = async () => {
+        const {
+          data: { deleteVenue: deletedVenue },
+        }: any = await API.graphql({
+          query: deleteVenue,
+          variables: { input: { id } },
+        })
+        console.log('deletedVenue: ', deletedVenue)
+        if (deletedVenue) {
+          actions.remove()
+        }
+      }
+
+      return (
+        <Button auto size='mini' onClick={deleteTheVenue}>
+          Delete
+        </Button>
+      )
+    }
+
     const { data: graphqlData }: any = await API.graphql({
       query: listVenues,
     })
+
     const venues = graphqlData.listVenues.items
     if (venues && venues.length) {
       const data = venues.map((venue) => ({
         ...venue,
-        operation,
+        showQrCode,
+        showDelete,
       }))
-      setTableData(data)
+      setVenueTableData(data)
     }
   }
 
-  // useEffect(() => {
-  //   getVenues()
-  // }, [])
+  const getAdmins = async () => {
+    const {
+      data: {
+        listVenueAdmins: { items: venueAdmins },
+      },
+    }: any = await API.graphql({
+      query: listVenueAdmins,
+    })
+    console.log('venueAdmins: ', venueAdmins)
+    if (venueAdmins && venueAdmins.length) {
+      const data = venueAdmins.map((admin) => ({
+        ...admin,
+      }))
+      setVenueAdminTableData(data)
+    }
+  }
 
   useEffect(() => {
     getVenues()
+    getAdmins()
   }, [])
 
-  // useEffect(() => {
-  //   if (!authenticatedAdmin) {
-  //     Auth.currentAuthenticatedUser().then(async ({ attributes, username }) => {
-  //       await subscription(username)
-  // const Authorization = `${(await Auth.currentSession())
-  //   .getAccessToken()
-  //   .getJwtToken()}`
-  //       // console.log('Authorization: ', Authorization)
-  //       // const authedAdmin = await getAuthUser({ username, Authorization })
-  //       // console.log('authedAdmin: ', authedAdmin)
-
-  //       // const existingAdmins = await listUsersByType({
-  //       //   groupname: 'superAdmin',
-  //       //   Authorization,
-  //       // })
-  //       // console.log('existingAdmins: ', existingAdmins)
-
-  //       // const existingVenueAdmins = await listUsersByType({
-  //       //   groupname: 'venueAdmin',
-  //       //   Authorization,
-  //       // })
-  //       // console.log('existingVenueAdmins: ', existingVenueAdmins)
-
-  //       setAuthenticatedAdmin({ ...attributes, username })
-  //     })
-  //   }
-  //   //   if (authenticatedAdmin) {
-  //   //     getVenues().then((res) => setVenues(res))
-  //   //   }
-  // }, [authenticatedAdmin])
-
   return (
-    <Page>
-      <ButtonGroup>
-        <Button onClick={toggle}>Create Venue</Button>
-      </ButtonGroup>
-      <Row>
-        <Col>
-          <Modal open={visible} onClose={closeHandler}>
-            <Modal.Title>Scan This</Modal.Title>
+    <>
+      <Modal open={qrOpen} onClose={closeHandler}>
+        <Modal.Title>Scan This</Modal.Title>
 
-            <Modal.Content style={{ margin: 'auto' }}>
-              {currentVenue && (
-                <QR
-                  value={`${window.location.href}/${currentVenue.name}/guest-registration`}
-                />
-              )}
-            </Modal.Content>
-
-            <Modal.Action passive onClick={closeHandler}>
-              Close
-            </Modal.Action>
-          </Modal>
-          {tableData && (
-            <Table data={tableData}>
-              <Table.Column prop='name' label='name' />
-              <Table.Column prop='website' label='website' />
-              <Table.Column prop='address' label='address' />
-              <Table.Column prop='operation' label='operation' width={150} />
-            </Table>
+        <Modal.Content style={{ margin: 'auto' }}>
+          {currentVenue && (
+            <QR
+              value={`${window.location.href}/${currentVenue.name}/guest-registration`}
+            />
           )}
-        </Col>
-        <Col span={24}>
-          <CreateVenue onClose={toggle} visible={visible} />
-        </Col>
-      </Row>
-    </Page>
+        </Modal.Content>
+
+        <Modal.Action passive onClick={closeHandler}>
+          Close
+        </Modal.Action>
+      </Modal>
+      <div>
+        <Row justify='space-between'>
+          <Col span={6}>
+            <Text h1>Admin Dashboard</Text>
+          </Col>
+          <Col span={6}>
+            <ButtonGroup>
+              <Button onClick={toggle}>Create Venue</Button>
+            </ButtonGroup>
+          </Col>
+        </Row>
+
+        <Divider />
+        <Text h2>Venue Admins/Owners</Text>
+        <Row>
+          <Col>
+            {venueTableData && (
+              <Table data={venueTableData}>
+                <Table.Column prop='name' label='name' />
+                <Table.Column prop='website' label='website' />
+                <Table.Column prop='address' label='address' />
+                <Table.Column prop='showQrCode' label='View QR' width={150} />
+                <Table.Column
+                  prop='showDelete'
+                  label='Delete Venue'
+                  width={150}
+                />
+              </Table>
+            )}
+          </Col>
+
+          <Col span={24}>
+            <CreateVenue onClose={toggle} visible={visible} />
+          </Col>
+        </Row>
+        <Divider />
+        <Text h2>Venue Admins/Owners</Text>
+        <Row>
+          <Col>
+            {venueAdminTableData && (
+              <Table data={venueAdminTableData}>
+                <Table.Column prop='name' label='name' />
+                <Table.Column prop='email' label='email' />
+              </Table>
+            )}
+          </Col>
+        </Row>
+      </div>
+    </>
   )
 }
-
-export default AdminDashboard

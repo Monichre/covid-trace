@@ -74,7 +74,7 @@
 				"TemplateURL": "https://s3.amazonaws.com/amplify-covid-trace-dev-210711-deployment/amplify-cfn-templates/auth/covidtrace64a38183-cloudformation-template.yml",
 				"Parameters": {
 					"identityPoolName": "covidtrace64a38183_identitypool_64a38183",
-					"allowUnauthenticatedIdentities": false,
+					"allowUnauthenticatedIdentities": true,
 					"resourceNameTruncated": "covidt64a38183",
 					"userPoolName": "covidtrace64a38183_userpool_64a38183",
 					"autoVerifiedAttributes": "email",
@@ -177,7 +177,7 @@
 						]
 					},
 					"S3DeploymentBucket": "amplify-covid-trace-dev-210711-deployment",
-					"S3DeploymentRootKey": "amplify-appsync-files/8623940855a0501c8ab059d7fe59e04583f20304",
+					"S3DeploymentRootKey": "amplify-appsync-files/1ddf79bdd32f99db5d2bbff8ef116273919fedd1",
 					"env": "dev"
 				}
 			}
@@ -226,6 +226,40 @@
 							"Outputs.UserPoolId"
 						]
 					},
+					"env": "dev"
+				}
+			}
+		},
+		"storagecovidTraceStorage": {
+			"Type": "AWS::CloudFormation::Stack",
+			"Properties": {
+				"TemplateURL": "https://s3.amazonaws.com/amplify-covid-trace-dev-210711-deployment/amplify-cfn-templates/storage/s3-cloudformation-template.json",
+				"Parameters": {
+					"bucketName": "covid-tracee4f729503145413ab1bc281c2654953d",
+					"authPolicyName": "s3_amplify_3e94a699",
+					"unauthPolicyName": "s3_amplify_3e94a699",
+					"authRoleName": {
+						"Ref": "AuthRoleName"
+					},
+					"unauthRoleName": {
+						"Ref": "UnauthRoleName"
+					},
+					"selectedGuestPermissions": "s3:PutObject,s3:GetObject,s3:ListBucket",
+					"selectedAuthenticatedPermissions": "s3:PutObject,s3:GetObject,s3:ListBucket,s3:DeleteObject",
+					"s3PermissionsAuthenticatedPublic": "s3:PutObject,s3:GetObject,s3:DeleteObject",
+					"s3PublicPolicy": "Public_policy_7a4924fa",
+					"s3PermissionsAuthenticatedUploads": "s3:PutObject",
+					"s3UploadsPolicy": "Uploads_policy_7a4924fa",
+					"s3PermissionsAuthenticatedProtected": "s3:PutObject,s3:GetObject,s3:DeleteObject",
+					"s3ProtectedPolicy": "Protected_policy_184e97a5",
+					"s3PermissionsAuthenticatedPrivate": "s3:PutObject,s3:GetObject,s3:DeleteObject",
+					"s3PrivatePolicy": "Private_policy_184e97a5",
+					"AuthenticatedAllowList": "ALLOW",
+					"s3ReadPolicy": "read_policy_7a4924fa",
+					"s3PermissionsGuestPublic": "s3:PutObject,s3:GetObject",
+					"s3PermissionsGuestUploads": "s3:PutObject",
+					"GuestAllowList": "ALLOW",
+					"triggerFunction": "NONE",
 					"env": "dev"
 				}
 			}

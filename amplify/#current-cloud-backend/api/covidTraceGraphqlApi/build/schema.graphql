@@ -21,6 +21,7 @@ type Venue {
   address: String!
   website: String
   type: String!
+  qrCode: String
   owner: VenueAdmin
   guests(filter: ModelGuestFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelGuestConnection
   visits(filter: ModelRegistrationFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelRegistrationConnection
@@ -287,6 +288,7 @@ input ModelVenueFilterInput {
   address: ModelStringInput
   website: ModelStringInput
   type: ModelStringInput
+  qrCode: ModelStringInput
   and: [ModelVenueFilterInput]
   or: [ModelVenueFilterInput]
   not: ModelVenueFilterInput
@@ -298,6 +300,7 @@ input CreateVenueInput {
   address: String!
   website: String
   type: String!
+  qrCode: String
   venueOwnerId: ID
 }
 
@@ -307,6 +310,7 @@ input UpdateVenueInput {
   address: String
   website: String
   type: String
+  qrCode: String
   venueOwnerId: ID
 }
 
@@ -319,6 +323,7 @@ input ModelVenueConditionInput {
   address: ModelStringInput
   website: ModelStringInput
   type: ModelStringInput
+  qrCode: ModelStringInput
   and: [ModelVenueConditionInput]
   or: [ModelVenueConditionInput]
   not: ModelVenueConditionInput

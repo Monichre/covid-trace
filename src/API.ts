@@ -105,6 +105,7 @@ export type CreateVenueInput = {
   address: string,
   website?: string | null,
   type: string,
+  qrCode?: string | null,
   venueOwnerId?: string | null,
 };
 
@@ -113,6 +114,7 @@ export type ModelVenueConditionInput = {
   address?: ModelStringInput | null,
   website?: ModelStringInput | null,
   type?: ModelStringInput | null,
+  qrCode?: ModelStringInput | null,
   and?: Array< ModelVenueConditionInput | null > | null,
   or?: Array< ModelVenueConditionInput | null > | null,
   not?: ModelVenueConditionInput | null,
@@ -124,6 +126,7 @@ export type UpdateVenueInput = {
   address?: string | null,
   website?: string | null,
   type?: string | null,
+  qrCode?: string | null,
   venueOwnerId?: string | null,
 };
 
@@ -248,6 +251,7 @@ export type ModelVenueFilterInput = {
   address?: ModelStringInput | null,
   website?: ModelStringInput | null,
   type?: ModelStringInput | null,
+  qrCode?: ModelStringInput | null,
   and?: Array< ModelVenueFilterInput | null > | null,
   or?: Array< ModelVenueFilterInput | null > | null,
   not?: ModelVenueFilterInput | null,
@@ -391,6 +395,7 @@ export type CreateVenueMutation = {
     address: string,
     website: string | null,
     type: string,
+    qrCode: string | null,
     owner:  {
       __typename: "VenueAdmin",
       id: string,
@@ -424,6 +429,7 @@ export type UpdateVenueMutation = {
     address: string,
     website: string | null,
     type: string,
+    qrCode: string | null,
     owner:  {
       __typename: "VenueAdmin",
       id: string,
@@ -457,6 +463,7 @@ export type DeleteVenueMutation = {
     address: string,
     website: string | null,
     type: string,
+    qrCode: string | null,
     owner:  {
       __typename: "VenueAdmin",
       id: string,
@@ -544,6 +551,7 @@ export type CreateRegistrationMutation = {
       address: string,
       website: string | null,
       type: string,
+      qrCode: string | null,
     } | null,
     guest:  {
       __typename: "Guest",
@@ -576,6 +584,7 @@ export type UpdateRegistrationMutation = {
       address: string,
       website: string | null,
       type: string,
+      qrCode: string | null,
     } | null,
     guest:  {
       __typename: "Guest",
@@ -608,6 +617,7 @@ export type DeleteRegistrationMutation = {
       address: string,
       website: string | null,
       type: string,
+      qrCode: string | null,
     } | null,
     guest:  {
       __typename: "Guest",
@@ -707,6 +717,7 @@ export type GetVenueQuery = {
     address: string,
     website: string | null,
     type: string,
+    qrCode: string | null,
     owner:  {
       __typename: "VenueAdmin",
       id: string,
@@ -743,6 +754,7 @@ export type ListVenuesQuery = {
       address: string,
       website: string | null,
       type: string,
+      qrCode: string | null,
     } | null > | null,
     nextToken: string | null,
   } | null,
@@ -802,6 +814,7 @@ export type GetRegistrationQuery = {
       address: string,
       website: string | null,
       type: string,
+      qrCode: string | null,
     } | null,
     guest:  {
       __typename: "Guest",
@@ -901,6 +914,7 @@ export type VenueByTypeQuery = {
       address: string,
       website: string | null,
       type: string,
+      qrCode: string | null,
     } | null > | null,
     nextToken: string | null,
   } | null,
@@ -1034,6 +1048,7 @@ export type OnCreateVenueSubscription = {
     address: string,
     website: string | null,
     type: string,
+    qrCode: string | null,
     owner:  {
       __typename: "VenueAdmin",
       id: string,
@@ -1066,6 +1081,7 @@ export type OnUpdateVenueSubscription = {
     address: string,
     website: string | null,
     type: string,
+    qrCode: string | null,
     owner:  {
       __typename: "VenueAdmin",
       id: string,
@@ -1098,6 +1114,7 @@ export type OnDeleteVenueSubscription = {
     address: string,
     website: string | null,
     type: string,
+    qrCode: string | null,
     owner:  {
       __typename: "VenueAdmin",
       id: string,
@@ -1181,6 +1198,7 @@ export type OnCreateRegistrationSubscription = {
       address: string,
       website: string | null,
       type: string,
+      qrCode: string | null,
     } | null,
     guest:  {
       __typename: "Guest",
@@ -1212,6 +1230,7 @@ export type OnUpdateRegistrationSubscription = {
       address: string,
       website: string | null,
       type: string,
+      qrCode: string | null,
     } | null,
     guest:  {
       __typename: "Guest",
@@ -1243,6 +1262,7 @@ export type OnDeleteRegistrationSubscription = {
       address: string,
       website: string | null,
       type: string,
+      qrCode: string | null,
     } | null,
     guest:  {
       __typename: "Guest",

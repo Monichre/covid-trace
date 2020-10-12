@@ -69,6 +69,7 @@ export const getVenue = /* GraphQL */ `
       address
       website
       type
+      qrCode
       owner {
         id
         name
@@ -99,6 +100,7 @@ export const listVenues = /* GraphQL */ `
         address
         website
         type
+        qrCode
       }
       nextToken
     }
@@ -146,6 +148,7 @@ export const getRegistration = /* GraphQL */ `
         address
         website
         type
+        qrCode
       }
       guest {
         id
@@ -250,6 +253,7 @@ export const venueByType = /* GraphQL */ `
         address
         website
         type
+        qrCode
       }
       nextToken
     }

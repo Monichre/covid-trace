@@ -77,5 +77,11 @@
 			]
 		}
 	},
-	"hosting": {}
+	"hosting": {},
+	"storage": {
+		"covidTraceStorage": {
+			"service": "S3",
+			"providerPlugin": "awscloudformation"
+		}
+	}
 }

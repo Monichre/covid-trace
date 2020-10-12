@@ -78,6 +78,7 @@ export const onCreateVenue = /* GraphQL */ `
       address
       website
       type
+      qrCode
       owner {
         id
         name
@@ -103,6 +104,7 @@ export const onUpdateVenue = /* GraphQL */ `
       address
       website
       type
+      qrCode
       owner {
         id
         name
@@ -128,6 +130,7 @@ export const onDeleteVenue = /* GraphQL */ `
       address
       website
       type
+      qrCode
       owner {
         id
         name
@@ -191,6 +194,7 @@ export const onCreateRegistration = /* GraphQL */ `
         address
         website
         type
+        qrCode
       }
       guest {
         id
@@ -216,6 +220,7 @@ export const onUpdateRegistration = /* GraphQL */ `
         address
         website
         type
+        qrCode
       }
       guest {
         id
@@ -241,6 +246,7 @@ export const onDeleteRegistration = /* GraphQL */ `
         address
         website
         type
+        qrCode
       }
       guest {
         id

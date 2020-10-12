@@ -22,7 +22,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/amplify-covid-trace-dev-210711-deployment/amplify-cfn-templates/auth/covidtrace64a38183-cloudformation-template.yml",
 				"logicalId": "authcovidtrace64a38183"
 			},
-			"lastPushTimeStamp": "2020-10-10T01:39:22.258Z",
+			"lastPushTimeStamp": "2020-10-12T20:20:25.892Z",
 			"output": {
 				"AppClientSecret": "l293b0fbq39s5b1ouhjbi0rbeo33c6mmgnf0rnh7ulec3gbfrt7",
 				"UserPoolId": "us-east-1_SOPmT0WkV",
@@ -32,7 +32,7 @@
 				"IdentityPoolName": "covidtrace64a38183_identitypool_64a38183__dev",
 				"UserPoolName": "covidtrace64a38183_userpool_64a38183"
 			},
-			"lastPushDirHash": "ragfoqysZFnyqwhvuYmldjSz6bE="
+			"lastPushDirHash": "hmN9Bu0+BZh4H8ky6V4DKFMWKj8="
 		},
 		"userPoolGroups": {
 			"service": "Cognito-UserPool-Groups",
@@ -49,7 +49,7 @@
 					]
 				}
 			],
-			"lastPushTimeStamp": "2020-10-10T01:39:22.258Z",
+			"lastPushTimeStamp": "2020-10-12T20:20:25.893Z",
 			"providerMetadata": {
 				"s3TemplateURL": "https://s3.amazonaws.com/amplify-covid-trace-dev-210711-deployment/amplify-cfn-templates/auth/template.json",
 				"logicalId": "authuserPoolGroups"
@@ -82,8 +82,8 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/amplify-covid-trace-dev-210711-deployment/amplify-cfn-templates/api/cloudformation-template.json",
 				"logicalId": "apicovidTraceGraphqlApi"
 			},
-			"lastPushTimeStamp": "2020-10-10T01:39:22.259Z",
-			"lastPushDirHash": "rjLMW9LAaTe57/En59+Q/grhRx4="
+			"lastPushTimeStamp": "2020-10-12T20:20:25.895Z",
+			"lastPushDirHash": "0Quz4uYCL353azQcRNfli7Wht9w="
 		},
 		"AdminQueries": {
 			"service": "API Gateway",
@@ -109,7 +109,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/amplify-covid-trace-dev-210711-deployment/amplify-cfn-templates/api/admin-queries-cloudformation-template.json",
 				"logicalId": "apiAdminQueries"
 			},
-			"lastPushTimeStamp": "2020-10-10T01:39:22.260Z",
+			"lastPushTimeStamp": "2020-10-12T20:20:25.896Z",
 			"output": {
 				"ApiName": "AdminQueries",
 				"RootUrl": "https://7sm5a5fsjk.execute-api.us-east-1.amazonaws.com/dev"
@@ -138,7 +138,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/amplify-covid-trace-dev-210711-deployment/amplify-cfn-templates/function/AdminQueriesf5ee5ca4-cloudformation-template.json",
 				"logicalId": "functionAdminQueriesf5ee5ca4"
 			},
-			"lastPushTimeStamp": "2020-10-10T01:39:22.260Z",
+			"lastPushTimeStamp": "2020-10-12T20:20:25.896Z",
 			"output": {
 				"Region": "us-east-1",
 				"Arn": "arn:aws:lambda:us-east-1:726906999379:function:AdminQueriesf5ee5ca4-dev",
@@ -148,5 +148,21 @@
 			"lastPushDirHash": "IeWANKTfQxMH9/Gq6iCxXL1Pxho="
 		}
 	},
-	"hosting": {}
+	"hosting": {},
+	"storage": {
+		"covidTraceStorage": {
+			"service": "S3",
+			"providerPlugin": "awscloudformation",
+			"providerMetadata": {
+				"s3TemplateURL": "https://s3.amazonaws.com/amplify-covid-trace-dev-210711-deployment/amplify-cfn-templates/storage/s3-cloudformation-template.json",
+				"logicalId": "storagecovidTraceStorage"
+			},
+			"lastPushTimeStamp": "2020-10-12T20:20:25.899Z",
+			"output": {
+				"BucketName": "covid-tracee4f729503145413ab1bc281c2654953ddev-dev",
+				"Region": "us-east-1"
+			},
+			"lastPushDirHash": "86l6+md/zSFQAW6L9nLdvpifY7c="
+		}
+	}
 }

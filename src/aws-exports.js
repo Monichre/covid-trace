@@ -16,7 +16,9 @@ const awsmobile = {
             "endpoint": "https://7sm5a5fsjk.execute-api.us-east-1.amazonaws.com/dev",
             "region": "us-east-1"
         }
-    ]
+    ],
+    "aws_user_files_s3_bucket": "covid-tracee4f729503145413ab1bc281c2654953ddev-dev",
+    "aws_user_files_s3_bucket_region": "us-east-1"
 };
 
 

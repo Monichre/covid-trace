@@ -32,6 +32,7 @@ type Venue
   address: String!
   website: String
   type: String!
+  qrCode: String
   owner: VenueAdmin @connection
   guests: [Guest] @connection
   visits: [Registration] @connection

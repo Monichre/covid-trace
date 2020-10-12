@@ -1,6 +1,6 @@
 {
     "identityPoolName": "covidtrace64a38183_identitypool_64a38183",
-    "allowUnauthenticatedIdentities": false,
+    "allowUnauthenticatedIdentities": true,
     "resourceNameTruncated": "covidt64a38183",
     "userPoolName": "covidtrace64a38183_userpool_64a38183",
     "autoVerifiedAttributes": [

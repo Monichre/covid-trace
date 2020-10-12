@@ -99,6 +99,7 @@ export const createVenue = /* GraphQL */ `
       address
       website
       type
+      qrCode
       owner {
         id
         name
@@ -127,6 +128,7 @@ export const updateVenue = /* GraphQL */ `
       address
       website
       type
+      qrCode
       owner {
         id
         name
@@ -155,6 +157,7 @@ export const deleteVenue = /* GraphQL */ `
       address
       website
       type
+      qrCode
       owner {
         id
         name
@@ -230,6 +233,7 @@ export const createRegistration = /* GraphQL */ `
         address
         website
         type
+        qrCode
       }
       guest {
         id
@@ -258,6 +262,7 @@ export const updateRegistration = /* GraphQL */ `
         address
         website
         type
+        qrCode
       }
       guest {
         id
@@ -286,6 +291,7 @@ export const deleteRegistration = /* GraphQL */ `
         address
         website
         type
+        qrCode
       }
       guest {
         id
