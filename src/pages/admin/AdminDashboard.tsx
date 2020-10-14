@@ -1,6 +1,6 @@
 import { Auth, API } from 'aws-amplify'
 import React, { useState, useEffect } from 'react'
-import { listVenueAdmins, listVenues } from '../../graphql/queries'
+import { getVenue, listVenueAdmins, listVenues } from '../../graphql/queries'
 import {
   Button,
   Modal,
@@ -13,12 +13,13 @@ import {
 } from '@geist-ui/react'
 import { CreateVenue } from '../../components/CreateVenue'
 import QR from 'qrcode.react'
-import { useLocation } from 'react-router-dom'
-import { deleteVenue } from '../../graphql/mutations'
+import { Link, useHistory, useLocation } from 'react-router-dom'
+import { deleteVenue, deleteVenueAdmin } from '../../graphql/mutations'
+import { withAuthenticator } from '@aws-amplify/ui-react'
 
 export interface AdminDashboardProps {}
 
-export const AdminDashboard: React.SFC<AdminDashboardProps> = () => {
+const AdminD: React.SFC<AdminDashboardProps> = () => {
   const [visible, setVisible] = useState(false)
   const toggle = () => setVisible((visible) => !visible)
 
@@ -73,18 +74,48 @@ export const AdminDashboard: React.SFC<AdminDashboardProps> = () => {
       query: listVenues,
     })
 
-    const venues = graphqlData.listVenues.items
-    if (venues && venues.length) {
-      const data = venues.map((venue) => ({
-        ...venue,
-        showQrCode,
-        showDelete,
-      }))
-      setVenueTableData(data)
-    }
+    const venues = await Promise.all(
+      graphqlData.listVenues.items.map(async (venue) => {
+        const { id } = venue
+        console.log('id: ', id)
+
+        const {
+          data: { getVenue: venueData },
+        }: any = await API.graphql({
+          query: getVenue,
+          variables: { id },
+        })
+        console.log('venueData: ', venueData)
+        return { ...venueData, showQrCode, showDelete }
+      })
+    )
+
+    setVenueTableData(venues)
   }
 
   const getAdmins = async () => {
+    const showDelete = (actions, { rowValue }) => {
+      const { id } = rowValue
+
+      const deleteTheAdmin = async () => {
+        const {
+          data: { deleteVenueAdmin: deletedAdmin },
+        }: any = await API.graphql({
+          query: deleteVenueAdmin,
+          variables: { input: { id } },
+        })
+        console.log('deletedAdmin: ', deletedAdmin)
+        if (deletedAdmin) {
+          actions.remove()
+        }
+      }
+
+      return (
+        <Button auto size='mini' onClick={deleteTheAdmin}>
+          Delete
+        </Button>
+      )
+    }
     const {
       data: {
         listVenueAdmins: { items: venueAdmins },
@@ -96,6 +127,7 @@ export const AdminDashboard: React.SFC<AdminDashboardProps> = () => {
     if (venueAdmins && venueAdmins.length) {
       const data = venueAdmins.map((admin) => ({
         ...admin,
+        showDelete,
       }))
       setVenueAdminTableData(data)
     }
@@ -113,9 +145,11 @@ export const AdminDashboard: React.SFC<AdminDashboardProps> = () => {
 
         <Modal.Content style={{ margin: 'auto' }}>
           {currentVenue && (
-            <QR
-              value={`${window.location.href}/${currentVenue.name}/guest-registration`}
-            />
+            <Link to={`/venues/${currentVenue.id}/guest-registration`}>
+              <QR
+                value={`${window.location.href}/venues/${currentVenue.id}/guest-registration`}
+              />
+            </Link>
           )}
         </Modal.Content>
 
@@ -136,7 +170,7 @@ export const AdminDashboard: React.SFC<AdminDashboardProps> = () => {
         </Row>
 
         <Divider />
-        <Text h2>Venue Admins/Owners</Text>
+        <Text h2>Venues</Text>
         <Row>
           <Col>
             {venueTableData && (
@@ -166,6 +200,7 @@ export const AdminDashboard: React.SFC<AdminDashboardProps> = () => {
               <Table data={venueAdminTableData}>
                 <Table.Column prop='name' label='name' />
                 <Table.Column prop='email' label='email' />
+                <Table.Column prop='showDelete' label='Delete' />
               </Table>
             )}
           </Col>
@@ -174,3 +209,4 @@ export const AdminDashboard: React.SFC<AdminDashboardProps> = () => {
     </>
   )
 }
+export const AdminDashboard = withAuthenticator(AdminD)

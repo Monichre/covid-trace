@@ -106,7 +106,7 @@ function App() {
           )}
         </Route>
         <Route
-          path='/venue/:id/guest-registration'
+          path='/venues/:id/guest-registration'
           exact
           render={(props) => <GuestRegistration {...props} />}
         />

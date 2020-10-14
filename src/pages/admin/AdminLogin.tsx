@@ -1,6 +1,6 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
-import { AmplifyAuthenticator } from '@aws-amplify/ui-react'
+import { AmplifyAuthenticator, withAuthenticator } from '@aws-amplify/ui-react'
 import { API, Auth, graphqlOperation } from 'aws-amplify'
 import { addToGroup, getUserAuthGroups } from '../../services/admin.service'
 import { AuthState, onAuthUIStateChange } from '@aws-amplify/ui-components'
@@ -18,9 +18,11 @@ const AdminLogin: React.SFC<AdminLoginProps> = () => {
     return onAuthUIStateChange((nextAuthState, authData: any) => {
       console.log('nextAuthState: ', nextAuthState)
       console.log('authData: ', authData)
-      const { username, attributes } = authData
       setAuthState(nextAuthState)
-      setUser({ username, ...attributes })
+      if (authData) {
+        const { username, attributes } = authData
+        setUser({ username, ...attributes })
+      }
     })
   }, [])
 
@@ -90,4 +92,4 @@ const AdminLogin: React.SFC<AdminLoginProps> = () => {
   return <AmplifyAuthenticator />
 }
 
-export default AdminLogin
+export default withAuthenticator(AdminLogin)

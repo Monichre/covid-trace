@@ -8,7 +8,7 @@ export interface QrCodeModalProps {
   open: boolean
   closeHandler: () => void
   saveQrCode: (qrLink) => void
-  venueName?: string | null
+  venueName?: unknown
 }
 
 export const QrCodeModal: React.SFC<QrCodeModalProps> = ({

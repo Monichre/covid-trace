@@ -20,21 +20,26 @@ import { useEffect, useState } from 'react'
 import { createGuest, createRegistration } from '../graphql/mutations'
 import { API } from 'aws-amplify'
 import { listGuests, listRegistrations } from '../graphql/queries'
+import { useHistory, useLocation, useParams } from 'react-router-dom'
 
 export interface GuestRegistrationProps {}
 
 export interface GuestRegistrationProps {}
 
 export const GuestRegistration: React.SFC<GuestRegistrationProps> = (props) => {
+  const location = useLocation()
+  const history = useHistory()
+  const { id: registrationVenueId }: any = useParams()
+  console.log('registrationVenueId: ', registrationVenueId)
+
   const { register, handleSubmit, errors, setValue } = useForm<FormData>()
   const [guests, setGuests] = useState(null)
   const [registrations, setRegistrations] = useState(null)
   const [submitted, setSubmitted] = useState(false)
 
   const today = new Date()
-  console.log('today: ', today)
   const time = `${today.getTime()}`
-  console.log('time: ', time)
+
   const onSubmit = async (values) => {
     const { partySize, email, name, phone } = values
 
@@ -55,16 +60,16 @@ export const GuestRegistration: React.SFC<GuestRegistrationProps> = (props) => {
           input: {
             time,
             date: today,
-            partySize,
+            partySize: parseInt(partySize),
             registrationGuestId: id,
-            registrationVenueId: 'demo',
+            registrationVenueId,
           },
         },
       })
       console.log('registration: ', registration)
       console.log('guest: ', guest)
-      getRegistrations()
-      getGuests()
+      // getRegistrations()
+      // getGuests()
       setSubmitted(true)
     }
 
@@ -92,75 +97,78 @@ export const GuestRegistration: React.SFC<GuestRegistrationProps> = (props) => {
     // }
   }
 
-  const getRegistrations = async () => {
-    const {
-      data: {
-        listRegistrations: { items: registrations },
-      },
-    }: any = await API.graphql({
-      query: listRegistrations,
-    })
-    console.log('registrations: ', registrations)
+  // const getRegistrations = async () => {
+  //   const {
+  //     data: {
+  //       listRegistrations: { items: registrations },
+  //     },
+  //   }: any = await API.graphql({
+  //     query: listRegistrations,
+  //   })
+  //   console.log('registrations: ', registrations)
 
-    setRegistrations(registrations)
-  }
+  //   setRegistrations(registrations)
+  // }
 
-  const getGuests = async () => {
-    const {
-      data: {
-        listGuests: { items: guests },
-      },
-    }: any = await API.graphql({
-      query: listGuests,
-    })
-    console.log('guests: ', guests)
+  // const getGuests = async () => {
+  //   const {
+  //     data: {
+  //       listGuests: { items: guests },
+  //     },
+  //   }: any = await API.graphql({
+  //     query: listGuests,
+  //   })
+  //   console.log('guests: ', guests)
 
-    setGuests(guests)
-  }
+  //   setGuests(guests)
+  // }
 
-  React.useEffect(() => {
-    getRegistrations()
-    getGuests()
-  }, [])
+  // React.useEffect(() => {
+  //   getRegistrations()
+  //   getGuests()
+  // }, [])
   return (
     <Page size='medium'>
       <Page.Content>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Fieldset>
-            <Fieldset.Title>Register</Fieldset.Title>
-            <Fieldset.Subtitle>
-              Enter the following information
-            </Fieldset.Subtitle>
-            <Row>
-              <Col>
-                <Input ref={register({ required: true })} name='name'>
-                  Name
+        {submitted && <div>Thank you</div>}
+        {!submitted && (
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Fieldset>
+              <Fieldset.Title>Register</Fieldset.Title>
+              <Fieldset.Subtitle>
+                Enter the following information
+              </Fieldset.Subtitle>
+              <Row>
+                <Col>
+                  <Input ref={register({ required: true })} name='name'>
+                    Name
+                  </Input>
+                </Col>
+                <Col>
+                  <Input ref={register({ required: true })} name='phone'>
+                    Phone
+                  </Input>
+                </Col>
+                <Col>
+                  <Input ref={register({ required: true })} name='email'>
+                    Email
+                  </Input>
+                </Col>
+                <Input ref={register({ required: true })} name='partySize'>
+                  Party Size
                 </Input>
-              </Col>
-              <Col>
-                <Input ref={register({ required: true })} name='phone'>
-                  Phone
-                </Input>
-              </Col>
-              <Col>
-                <Input ref={register({ required: true })} name='email'>
-                  Email
-                </Input>
-              </Col>
-              <Input ref={register({ required: true })} name='partySize'>
-                Party Size
-              </Input>
-            </Row>
-            <Divider />
+              </Row>
+              <Divider />
 
-            <Fieldset.Footer>
-              <Fieldset.Footer.Actions>
-                <button type='submit'>Save</button>
-              </Fieldset.Footer.Actions>
-            </Fieldset.Footer>
-          </Fieldset>
-        </form>
-        {guests &&
+              <Fieldset.Footer>
+                <Fieldset.Footer.Actions>
+                  <button type='submit'>Save</button>
+                </Fieldset.Footer.Actions>
+              </Fieldset.Footer>
+            </Fieldset>
+          </form>
+        )}
+        {/* {guests &&
           guests.length &&
           guests.map((guest) => {
             return (
@@ -190,7 +198,7 @@ export const GuestRegistration: React.SFC<GuestRegistrationProps> = (props) => {
                 />
               </Card>
             )
-          })}
+          })} */}
       </Page.Content>
     </Page>
   )
